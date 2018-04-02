@@ -1,0 +1,3 @@
+Install all packages using `npm install`.
+
+Run the tests within LockerService using `npm run jest:locker`
