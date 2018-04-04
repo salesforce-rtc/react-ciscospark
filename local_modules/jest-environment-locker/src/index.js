@@ -25,11 +25,6 @@ class JSDOMEnvironment {
     const win = this.dom.window.document.defaultView;
     // dummy patches
     win.CanvasRenderingContext2D = function () { };
-    win.MutationObserver = function () {
-      this.observe = function () { };
-      this.disconnect = function () { };
-    };
-
     win.HowlerGlobal = function () { };
     win.Howl = function () { };
     win.Sound = function () { };
@@ -84,6 +79,9 @@ class JSDOMEnvironment {
   setup() {
     const document = this.global._document;
     const window = this.global._globalProxy;
+    delete window.document;
+    window.document = window._document;
+
     const symbol = Object.getOwnPropertySymbols(this.global._globalProxy._document)[0];
     const locSymbol = Object.getOwnPropertySymbols(document.location[symbol])[0];
 
@@ -96,8 +94,7 @@ class JSDOMEnvironment {
       shouldFreeze: false,
       unsafeGlobal: window,
       unsafeEval: window.eval,
-      unsafeFunction: window.Function,
-      unsafeDocument: document,
+      unsafeFunction: window.Function
     });
     const sw = window.Locker.getEnv({ namespace: 'jest-environment-locker' });
     sw.location[locSymbol] = sw.location;
